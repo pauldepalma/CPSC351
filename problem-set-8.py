@@ -3,11 +3,11 @@ Python 3.9
 DFA to recogniz L
 Sigma = {0,1}
 L = {s | s is an elememt of Sigma*, every odd position of is 1, length
-  or s > 0}
+  of s >= 0}
 '''
 
-#Proecess using the Kilfoyle model
-def process(M,string):
+#Process using the Kilfoyle model
+def simulate(M,string):
     Q = M[0]
     Sigma = M[1]
     delta = M[2]
@@ -47,7 +47,7 @@ def main():
         string = input("enter a string or enter quit to stop ")
         if string =="quit":
             break
-        print(process(M,string))
+        print(simulate(M,string))
 
 main()
         
