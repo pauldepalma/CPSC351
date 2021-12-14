@@ -11,12 +11,12 @@ class Stack:
     def push(self,elt):
         self.stk.append(elt)
 
-    def pop(self,elt):
-        return self.stk.pop()
+    def pop(self):
+        if not self.isempty():
+            self.stk.pop()
 
     def peek(self):
-        top = len(self.stk) - 1
-        return self.stk[top]
+        return self.stk[-1]
 
     def isempty(self):
         if self.length() == 0:
@@ -28,7 +28,7 @@ class Stack:
         return len(self.stk)
 
     def display(self):
-        for elt in self.stk:
+        for elt in self.stk[::-1]:
             print(elt)
 
 def build_PDA():
@@ -60,12 +60,11 @@ def simulate(M,input):
             state,stk = q2(symbol,stk)
         else:
             if state == 3:
-                state,stk = q3(state,symbol,stk)
-
-    if state == 4:
-        return q4(stk)
-    else:
-        return "Reject"
+                state,stk = q3(symbol,stk)
+    stk.pop()
+    stk.display()
+    return(q4(stk))
+    
             
 
 #The transition functions follow. They are identical to those found on p. 115
@@ -78,32 +77,23 @@ def q1(input,stk):
         stk.push('$')
     return result,state,stk
 
-def q2(symbol, stk):
-    print(symbol)
-    stk.display()
-    print()
+def q2(symbol,stk):
     if symbol == '0':
         stk.push('0')
         state = 2
         return state,stk
         
     if symbol == '1':
-        if stk.peek == '0':
-            stk.pop()
-            state = 3
-            return state,stk
-    quit()
-    
+        stk.pop()
+        state = 3
+        return state,stk 
 
 def q3(symbol, stk):
     state = -1
-    if symbol == '1' and stk.peek() == '0':
+    if symbol == '1': 
         stk.pop()
         state = 3
-    if stk.peek() == '$':
-        stk.pop()
-        state = 4
-    return state, stk
+        return state,stk
 
 def q4(stk):
     if stk.isempty():
