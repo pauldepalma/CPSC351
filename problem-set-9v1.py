@@ -28,76 +28,81 @@ class Stack:
     def length(self):
         return len(self.stk)
 
-def q1(state,st):
+def q1(input,st):
+    #input is empty, accept
+    if len(input) == 0:
+        return 'Accept', state, st
+    #Go to the next state
     st.push('$')
     state = 2
-    return state,st
+    return 'None',state,st
 
 def q2(symbol, st):
-    err = False
     if symbol == '0':
         st.push('0')
         state = 2
-        return state, st, err
+        return 'None', state, st
 
     if symbol == '1':
         if st.peek() == '0':
             st.pop()
             state = 3
-            return state, st, err
-
-    err = True
-    return 'None', 'None', err
+            return 'None', state, st
+    
+    return 'Reject', 'None', 'None'
 
 def q3(symbol,st):
-    if symbol == '1' and st.peek() == '0':
+    if st.peek() == '0':
         st.pop()
-        state = 3
     if st.peek() == '$':
         state = 4
-    return state,st
+    else:
+        state = 3
 
-def q1q4(state,st,F):
-    if state == 1:
-        return 'Accept'
-    print (state)
-    if not st.isempty():
-        if st.peek() == '$':
-            if state in F:
-                return "Accept"
+    return 'None', state,st
+
+def q4(state,st):
+    if st.peek() == '$':
+            return "Accept"
     return "Reject"
 
 def process(M,input):
+   
+    #initialize
     Q = list(M[0])
-    Sigma = M[1]
-    q0 = M[3]
-    F = M[4]
-
     st = Stack()
-
-    #init
-    state = q0
-    if len(input) > 0:
-        state, st = q1(q0,st)
-        if state not in Q:
-            return "Reject"
+    condition, state, st = q1(input, st)
+    if condition == 'Accept':  #input string is empty
+        return 'Accept'
 
     #process input
     for symbol in input:
-        if symbol not in Sigma:
-            return "Reject"
         if state == Q[1]:
-            state, st, err = q2(symbol, st)
-            if err or state not in Q:
-                return "Reject"
-            if state == Q[2]:
-                state, st = q3(symbol,st)
-                if state not in Q:
-                    return "Reject"
-
-    #Accept?
-    return q1q4(state,st,F)
-
+            print("state: ", state)
+            condition, state, st = q2(symbol, st)
+            print(symbol)
+            print(condition)
+            print(state)
+            print()
+            if condition == 'Reject':
+                return "Reject"  #invalid input
+        continue
+        if state == Q[2]:
+            print("state: ", state)
+            condition, state, st = q3(symbol,st)
+            print(symbol)
+            print(condition)
+            print(state)
+            print()
+            if condition =='Reject':
+                return "Reject" #invalid input
+        
+                    
+    if state == Q[3]:
+        return q4(state,st)
+    else:
+        return "Reject"
+    
 def build_PDA():
     Q = {1,2,3,4}
     Sigma = {'0','1'}
